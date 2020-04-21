@@ -1,0 +1,4 @@
+/.scrapy
+/result/*.json
+
+__pycache__
