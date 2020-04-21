@@ -138,15 +138,15 @@ class CrawlerSpider(CrawlSpider):
 
     def dump(self):
         # hitung total similarity
-        for dataset in self.datasets:
-            total_similarity = 0
-            count_similarity = 0
-            for domain in dataset['result']:
-                result = dataset['result'][domain]
-                total_similarity += result['similarity']
-                count_similarity += 1
+        # for dataset in self.datasets:
+        #     total_similarity = 0
+        #     count_similarity = 0
+        #     for domain in dataset['result']:
+        #         result = dataset['result'][domain]
+        #         total_similarity += result['similarity']
+        #         count_similarity += 1
 
-            dataset['similarity'] = total_similarity / count_similarity
+        #     dataset['similarity'] = total_similarity / count_similarity
 
         # get timestamp untuk namafile
         dateTimeObj = datetime.now()
