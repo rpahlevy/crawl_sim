@@ -5,6 +5,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 
 import spacy
+print('Load en_core_web_lg')
 nlp = spacy.load("en_core_web_lg")
 
 from datetime import datetime
@@ -16,10 +17,12 @@ class CrawlerSpider(CrawlSpider):
     file_websites = 'source/websites.txt'
     # ubah dengan datasets-50 / datasets-100 / datasets
     file_datasets = 'source/datasets-50.csv'
+    file_sim_cache = 'cache/similarity.csv'
 
     start_urls = []
     allowed_domains = []
 
+    print('Load website list')
     # load start_urls dari file websites
     with open(file_websites, 'r') as f:
         start_urls = f.read().strip().split('\n')
@@ -32,10 +35,31 @@ class CrawlerSpider(CrawlSpider):
     # variabel untuk menyimpan cache nlp
     cache_nlp = {}
 
+    # variabel untuk menyimpan cache similarity
+    print('Load cache similarity')
+    cache_sim = {}
+    try:
+        s = open(file_sim_cache, 'r')
+
+        sim = s.read().strip().split('\n')
+        for row in sim:
+            sim_arr = row.split(';')
+            if len(sim_arr) < 3:
+                continue
+
+            if sim_arr[0] not in cache_sim:
+                cache_sim[sim_arr[0]] = {}
+            cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
+
+        s.close()
+    except FileNotFoundError:
+        print('No cache similarity')
+
     # threshold untuk menentukan tweet kredibel / tidak
     trust_threshold = 0.85
 
     # load datasets
+    print('Load datasets')
     datasets = []
     with open(file_datasets, 'r', encoding='utf8') as f:
         datasets = [{k: v for k, v in row.items()}
@@ -99,11 +123,23 @@ class CrawlerSpider(CrawlSpider):
 
                 word = dataset['status_data']
 
-                word = self.process_text(word, True)
-                if (word.vector_norm):
-                    similarity = word.similarity(body)
+                if word in self.cache_sim and url in self.cache_sim[word]:
+                    similarity = self.cache_sim[word][url]
                 else:
-                    similarity = 0
+                    word = self.process_text(word, True)
+                    if (word.vector_norm):
+                        similarity = word.similarity(body)
+                    else:
+                        similarity = 0
+                    
+                    # simpan ke cache program
+                    if word not in self.cache_sim:
+                        self.cache_sim[word] = {}
+                    self.cache_sim[word][url] = similarity
+
+                    # simpan ke cache file
+                    with open('cache/similarity.csv', 'a') as f:
+                        f.write(f'{word};{url};{similarity}\n')
 
                 if 'result' not in dataset:
                     dataset['result'] = {}
@@ -159,9 +195,9 @@ class CrawlerSpider(CrawlSpider):
             json.dump(self.datasets, f)
 
         # sort by similarity lalu simpan ke json
-        self.datasets = sorted(self.datasets, key=lambda i: i['similarity'], reverse=True)
+        sorted_datasets = sorted(self.datasets, key=lambda i: i['similarity'], reverse=True)
         with open(file_rank, 'w') as f:
-            json.dump(self.datasets, f)
+            json.dump(sorted_datasets, f)
 
     def closed(self, reason):
         self.dump()
