@@ -79,7 +79,7 @@ class CrawlerSpider(CrawlSpider):
 
         # start request
         for url in start_urls:
-            yield scrapy.Request(url=url)
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def process_text(self, text, cache):
         key = text
