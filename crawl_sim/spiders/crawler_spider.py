@@ -63,7 +63,7 @@ class CrawlerSpider(CrawlSpider):
                 if len(sim_arr) < 3:
                     continue
 
-                if sim_arr[0] not in cache_sim:
+                if sim_arr[0] not in self.cache_sim:
                     self.cache_sim[sim_arr[0]] = {}
                 self.cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
 
