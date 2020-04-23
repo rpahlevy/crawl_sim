@@ -55,7 +55,7 @@ class CrawlerSpider(CrawlSpider):
     def start_requests(self):
         self.log('Load cache similarity')
         try:
-            s = open(file_sim_cache, 'r')
+            s = open(self.file_sim_cache, 'r')
 
             sim = s.read().strip().split('\n')
             for row in sim:
@@ -73,7 +73,7 @@ class CrawlerSpider(CrawlSpider):
 
         # load datasets
         self.log('Load datasets')
-        with open(file_datasets, 'r', encoding='utf8') as f:
+        with open(self.file_datasets, 'r', encoding='utf8') as f:
             self.datasets = [{k: v for k, v in row.items()}
                 for row in csv.DictReader(f, skipinitialspace=True)]
 
