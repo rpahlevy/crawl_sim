@@ -36,14 +36,35 @@ class CrawlerSpider(CrawlSpider):
     cache_nlp = {}
 
     # variabel untuk menyimpan cache similarity
+    print('Load cache similarity')
     cache_sim = {}
-    
+    try:
+        s = open(file_sim_cache, 'r')
+
+        sim = s.read().strip().split('\n')
+        for row in sim:
+            sim_arr = row.split(';')
+            if len(sim_arr) < 3:
+                continue
+
+            if sim_arr[0] not in cache_sim:
+                cache_sim[sim_arr[0]] = {}
+            cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
+
+        s.close()
+    except FileNotFoundError:
+        print('No cache similarity')
+
     # threshold untuk menentukan tweet kredibel / tidak
     trust_threshold = 0.90
-    
-    # datasets
+
+    # load datasets
+    print('Load datasets')
     datasets = []
-    
+    with open(file_datasets, 'r', encoding='utf8') as f:
+        datasets = [{k: v for k, v in row.items()}
+            for row in csv.DictReader(f, skipinitialspace=True)]
+
     # penanda untuk simpan setiap x waktu
     last_save = datetime.now()
 
@@ -51,35 +72,6 @@ class CrawlerSpider(CrawlSpider):
     save_each = 600
 
     rules = [Rule(LinkExtractor(allow='/'), callback='parse_url', follow=True)]
-
-    def start_requests(self):
-        self.log('Load cache similarity')
-        try:
-            s = open(self.file_sim_cache, 'r')
-
-            sim = s.read().strip().split('\n')
-            for row in sim:
-                sim_arr = row.split(';')
-                if len(sim_arr) < 3:
-                    continue
-
-                if sim_arr[0] not in self.cache_sim:
-                    self.cache_sim[sim_arr[0]] = {}
-                self.cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
-
-            s.close()
-        except FileNotFoundError:
-            print('No cache similarity')
-
-        # load datasets
-        self.log('Load datasets')
-        with open(self.file_datasets, 'r', encoding='utf8') as f:
-            self.datasets = [{k: v for k, v in row.items()}
-                for row in csv.DictReader(f, skipinitialspace=True)]
-
-        # start request
-        for url in self.start_urls:
-            yield scrapy.Request(url=url, callback=self.parse)
 
     def process_text(self, text, cache):
         key = text
