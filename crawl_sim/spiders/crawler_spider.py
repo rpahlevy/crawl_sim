@@ -15,8 +15,8 @@ class CrawlerSpider(CrawlSpider):
     name = "crawler"
 
     file_websites = 'source/websites.txt'
-    # ubah dengan datasets-50 / datasets-100 / datasets
-    file_datasets = 'source/datasets-50.csv'
+    # ubah dengan datasets-50 / datasets-100 / datasets / preprocessed
+    file_datasets = 'source/preprocessed.csv'
     file_sim_cache = 'cache/similarity.csv'
 
     start_urls = []
@@ -126,7 +126,8 @@ class CrawlerSpider(CrawlSpider):
                 if word in self.cache_sim and url in self.cache_sim[word]:
                     similarity = self.cache_sim[word][url]
                 else:
-                    word = self.process_text(word, True)
+                    # karena sudah di preprocess lsg panggil nlp
+                    word = nlp(word)
                     if (word.vector_norm):
                         similarity = word.similarity(body)
                     else:
@@ -188,16 +189,16 @@ class CrawlerSpider(CrawlSpider):
         dateTimeObj = datetime.now()
         timestampStr = dateTimeObj.strftime("%Y%m%d_%H%M%S.%f")
         file_result = 'result/datasets-%s.json' % timestampStr
-        file_rank = 'result/rank-%s.json' % timestampStr
+        # file_rank = 'result/rank-%s.json' % timestampStr
 
         # simpan ke json
         with open(file_result, 'w') as f:
             json.dump(self.datasets, f)
 
         # sort by similarity lalu simpan ke json
-        sorted_datasets = sorted(self.datasets, key=lambda i: i['similarity'], reverse=True)
-        with open(file_rank, 'w') as f:
-            json.dump(sorted_datasets, f)
+        # sorted_datasets = sorted(self.datasets, key=lambda i: i['similarity'], reverse=True)
+        # with open(file_rank, 'w') as f:
+        #     json.dump(sorted_datasets, f)
 
     def closed(self, reason):
         self.dump()
