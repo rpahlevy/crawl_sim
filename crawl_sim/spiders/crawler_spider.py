@@ -53,23 +53,23 @@ class CrawlerSpider(CrawlSpider):
     rules = [Rule(LinkExtractor(allow='/'), callback='parse_url', follow=True)]
 
     def start_requests(self):
-        # self.log('Load cache similarity')
-        # try:
-        #     s = open(self.file_sim_cache, 'r')
+        self.log('Load cache similarity')
+        try:
+            s = open(self.file_sim_cache, 'r')
 
-        #     sim = s.read().strip().split('\n')
-        #     for row in sim:
-        #         sim_arr = row.split(';')
-        #         if len(sim_arr) < 3:
-        #             continue
+            sim = s.read().strip().split('\n')
+            for row in sim:
+                sim_arr = row.split(';')
+                if len(sim_arr) < 3:
+                    continue
 
-        #         if sim_arr[0] not in self.cache_sim:
-        #             self.cache_sim[sim_arr[0]] = {}
-        #         self.cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
+                if sim_arr[0] not in self.cache_sim:
+                    self.cache_sim[sim_arr[0]] = {}
+                self.cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
 
-        #     s.close()
-        # except FileNotFoundError:
-        #     print('No cache similarity')
+            s.close()
+        except FileNotFoundError:
+            print('No cache similarity')
 
         # load datasets
         self.log('Load datasets')
