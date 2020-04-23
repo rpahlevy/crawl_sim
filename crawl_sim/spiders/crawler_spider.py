@@ -124,7 +124,7 @@ class CrawlerSpider(CrawlSpider):
                 word = dataset['status_data']
 
                 if word in self.cache_sim and url in self.cache_sim[word]:
-                    similarity = self.cache_sim[word][url]
+                    similarity = float(self.cache_sim[word][url])
                 else:
                     # karena sudah di preprocess lsg panggil nlp
                     word = nlp(word)
