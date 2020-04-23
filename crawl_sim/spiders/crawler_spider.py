@@ -77,6 +77,10 @@ class CrawlerSpider(CrawlSpider):
             self.datasets = [{k: v for k, v in row.items()}
                 for row in csv.DictReader(f, skipinitialspace=True)]
 
+        # start request
+        for url in start_urls:
+            yield scrapy.Request(url=url)
+
     def process_text(self, text, cache):
         key = text
         if cache:
