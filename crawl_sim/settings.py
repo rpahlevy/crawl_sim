@@ -99,3 +99,5 @@ RETRY_ENABLED = False
 
 # LOG_FILE = 'scrapy.log'
 # REDIRECT_ENABLED = False
+DEPTH_LIMIT = 3
+DEPTH_PRIORITY = 1

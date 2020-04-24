@@ -1,5 +1,6 @@
 /.scrapy
 /result/*.json
+/result/*.csv
 /cache/*.csv
 
 __pycache__
