@@ -149,10 +149,11 @@ class SingleSpider(CrawlSpider):
                     else:
                         similarity = 0
                     
-                    # simpan ke cache program
-                    if word not in self.cache_sim:
-                        self.cache_sim[word] = {}
-                    self.cache_sim[word][url] = similarity
+                    # tidak perlu
+                    ## simpan ke cache program
+                    # if word not in self.cache_sim:
+                    #     self.cache_sim[word] = {}
+                    # self.cache_sim[word][url] = similarity
 
                     # simpan ke cache file
                     with open('cache/similarity.csv', 'a') as f:
