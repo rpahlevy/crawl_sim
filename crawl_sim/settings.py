@@ -92,7 +92,7 @@ COOKIES_ENABLED = False
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 REACTOR_THREADPOOL_MAXSIZE = 20
-# LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'INFO'
 
 RETRY_ENABLED = False
 # RETRY_TIMES = 1
