@@ -5,3 +5,5 @@
 
 __pycache__
 .vscode/settings.json
+*.log
+HTA_noduplicates.json

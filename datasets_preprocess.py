@@ -1,6 +1,6 @@
 import csv
 import sys
-import json
+import jsonlines
 
 import spacy
 print('Load en_core_web_lg')
@@ -28,29 +28,25 @@ def process_text(text):
     result = nlp(" ".join(result))
     return result
 
-file_datasets = 'source/datasets'
+# file_datasets = 'source/datasets'
+file_datasets = 'HTA_noduplicates.json'
+total = 100
 if len(sys.argv) >= 2:
-    total = sys.argv[1]
-    if total != '50' and total != '100':
-        sys.exit('Use 50, 100 or empty to use ALL : %s' % total)
-
-    file_datasets += ('-' + total)
-
-file_datasets += '.csv'
+    total = int(sys.argv[1])
 
 print('Load datasets')
-datasets = []
-with open(file_datasets, 'r', encoding='utf8') as f:
-    datasets = [{k: v for k, v in row.items()}
-        for row in csv.DictReader(f, skipinitialspace=True)]
-
 processed = []
-for data in datasets:
-    processed.append({
-        'status_id': data['status_id'],
-        'status_data': process_text(data['status_data']),
-        'status_timestamp': data['status_timestamp'],
-    })
+with jsonlines.open(file_datasets) as f:
+    for index, data in enumerate(f):
+        if index >= total:
+            break
+
+        processed.append({
+            'status_id': data['id'],
+            'status_data': process_text(data['text']),
+            'status_timestamp': data['topsy']['timestamp'],
+        })
+
 
 if len(processed) > 1:
     with open('source/preprocessed.csv', 'w', encoding='utf8', newline='') as f:
@@ -60,4 +56,4 @@ if len(processed) > 1:
             output.writerow(row.values())
 
 
-sys.exit('Preprocessed : %d data' % len(datasets))
+sys.exit('Preprocessed : %d data' % len(processed))
