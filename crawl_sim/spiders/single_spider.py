@@ -16,7 +16,7 @@ import sys
 class SingleSpider(CrawlSpider):
     name = "single"
 
-    # file_websites = 'source/websites.txt'
+    file_websites = 'source/websites.txt'
     # ubah dengan datasets-50 / datasets-100 / datasets / preprocessed
     file_datasets = 'source/preprocessed.csv'
     file_sim_cache = 'cache/similarity.csv'
@@ -24,10 +24,6 @@ class SingleSpider(CrawlSpider):
     start_urls = []
     allowed_domains = []
 
-    # print('Load website list')
-    # load start_urls dari file websites
-    # with open(file_websites, 'r') as f:
-    #     start_urls = f.read().strip().split('\n')
 
     # parse start_urls untuk mendapatkan domain -> masukkan ke allowed_domains
     for arg in sys.argv:
@@ -43,8 +39,16 @@ class SingleSpider(CrawlSpider):
                 domain = url.split('/')[2]#.replace('www.', '')
                 allowed_domains.append(domain)
 
+    # jika start_urls masih kosong gunakan file_websites
     if len(start_urls) == 0:
-        sys.exit('Masukkan URL dengan perintah -a website=, contoh "-a website=https://who.int/"')
+        print('No website arguments. Load website list from %s' % file_websites)
+        # load start_urls dari file websites
+        with open(file_websites, 'r') as f:
+            for url in f.read().strip().split('\n'):
+                url = url.strip()
+                start_urls.append(url)
+                domain = url.split('/')[2]#.replace('www.', '')
+                allowed_domains.append(domain)
 
     # print(allowed_domains)
     # sys.exit()
@@ -52,27 +56,27 @@ class SingleSpider(CrawlSpider):
     cache_nlp = {}
 
     # variabel untuk menyimpan cache similarity
-    print('Load cache similarity')
+    # print('Load cache similarity')
     cache_sim = {}
-    try:
-        s = open(file_sim_cache, 'r')
+    # try:
+    #     s = open(file_sim_cache, 'r')
 
-        sim = s.read().strip().split('\n')
-        for row in sim:
-            sim_arr = row.split(';')
-            if len(sim_arr) < 3:
-                continue
+    #     sim = s.read().strip().split('\n')
+    #     for row in sim:
+    #         sim_arr = row.split(';')
+    #         if len(sim_arr) < 3:
+    #             continue
 
-            if sim_arr[0] not in cache_sim:
-                cache_sim[sim_arr[0]] = {}
-            cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
+    #         if sim_arr[0] not in cache_sim:
+    #             cache_sim[sim_arr[0]] = {}
+    #         cache_sim[sim_arr[0]][sim_arr[1]] = sim_arr[2]
 
-        s.close()
-    except FileNotFoundError:
-        print('No cache similarity')
+    #     s.close()
+    # except FileNotFoundError:
+    #     print('No cache similarity')
 
     # threshold untuk menentukan tweet kredibel / tidak
-    trust_threshold = 0.90
+    # trust_threshold = 0.90
 
     # load datasets
     print('Load datasets')
@@ -134,20 +138,20 @@ class SingleSpider(CrawlSpider):
         if (body.vector_norm):
             for dataset in self.datasets:
                 # cek apakah sudah mencapai similarity yg diinginkan
-                if 'similarity' in dataset and dataset['similarity'] >= self.trust_threshold:
-                    continue
+                # if 'similarity' in dataset and dataset['similarity'] >= self.trust_threshold:
+                #     continue
 
                 word = dataset['status_data']
 
-                if word in self.cache_sim and url in self.cache_sim[word]:
-                    similarity = float(self.cache_sim[word][url])
-                else:
+                # if word in self.cache_sim and url in self.cache_sim[word]:
+                #     similarity = float(self.cache_sim[word][url])
+                # else:
                     # karena sudah di preprocess lsg panggil nlp
-                    word = nlp(word)
-                    if (word.vector_norm):
-                        similarity = word.similarity(body)
-                    else:
-                        similarity = 0
+                word = nlp(word)
+                if (word.vector_norm):
+                    similarity = word.similarity(body)
+                else:
+                    similarity = 0
                     
                     # tidak perlu
                     ## simpan ke cache program
@@ -156,8 +160,8 @@ class SingleSpider(CrawlSpider):
                     # self.cache_sim[word][url] = similarity
 
                     # simpan ke cache file
-                    with open('cache/similarity.csv', 'a') as f:
-                        f.write(f'{word};{url};{similarity}\n')
+                    # with open(self.file_sim_cache, 'a') as f:
+                    #     f.write(f'{word};{url};{similarity}\n')
 
                 if 'result' not in dataset:
                     dataset['result'] = {}

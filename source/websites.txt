@@ -7,9 +7,9 @@ https://uhs.umich.edu/
 http://www.cdc.gov/
 https://www.choosemyplate.gov/
 https://www.everydayhealth.com/
-http://www.familydoctor.org/
-http://www.goaskalice.columbia.edu/
-http://www.healthfinder.gov/
+https://familydoctor.org/
+https://goaskalice.columbia.edu/
+https://health.gov/
 https://healthyheartscore.sph.harvard.edu/
 http://www.mlanet.org/resources/userguide.html
 https://www.merckengage.com/
@@ -19,5 +19,4 @@ http://www.safemedication.com/
 https://www.lib.umich.edu/taubman-health-sciences-library
 http://www.webmd.com/
 http://www.fda.gov/
-http://www.medlineplus.gov/
 https://www.who.int/
