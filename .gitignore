@@ -8,3 +8,4 @@ __pycache__
 *.log
 HTA_noduplicates.json
 source/preprocessed.csv
+results.csv
