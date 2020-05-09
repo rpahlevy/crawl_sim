@@ -5,8 +5,8 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 
 import spacy
-print('Load en_core_web_md')
-nlp = spacy.load("en_core_web_md")
+print('Load en_core_web_lg')
+nlp = spacy.load("en_core_web_lg")
 
 from datetime import datetime
 import json
