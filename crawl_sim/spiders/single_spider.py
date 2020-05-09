@@ -5,11 +5,12 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 
 import spacy
-print('Load en_core_web_lg')
-nlp = spacy.load("en_core_web_lg")
+print('Load en_core_web_md')
+nlp = spacy.load("en_core_web_md")
 
 from datetime import datetime
 import json
+import jsonlines
 
 import sys
 
@@ -20,10 +21,17 @@ class SingleSpider(CrawlSpider):
     # ubah dengan datasets-50 / datasets-100 / datasets / preprocessed
     file_datasets = 'source/preprocessed.csv'
     file_sim_cache = 'cache/similarity.csv'
+    file_result = 'result/results.jl'
 
     start_urls = []
     allowed_domains = []
 
+    part = 100
+
+    try:
+        start_row = sum(1 for line in open(file_result))
+    except expression as identifier:
+        start_row = 0
 
     # parse start_urls untuk mendapatkan domain -> masukkan ke allowed_domains
     for arg in sys.argv:
@@ -31,6 +39,7 @@ class SingleSpider(CrawlSpider):
             continue
 
         arg = arg.split('=')
+
         if arg[0] == 'website':
             urls = arg[1].split(';')
             for url in urls:
@@ -38,6 +47,14 @@ class SingleSpider(CrawlSpider):
                 start_urls.append(url)
                 domain = url.split('/')[2]#.replace('www.', '')
                 allowed_domains.append(domain)
+
+        if arg[0] == 'start':
+            start_row = int(arg[1])
+
+        if arg[0] == 'part':
+            part = int(arg[1])
+
+    finish_row = start_row + part
 
     # jika start_urls masih kosong gunakan file_websites
     if len(start_urls) == 0:
@@ -79,11 +96,16 @@ class SingleSpider(CrawlSpider):
     # trust_threshold = 0.90
 
     # load datasets
-    print('Load datasets')
+    print('Load datasets from {} to {}'.format(start_row, finish_row))
     datasets = []
     with open(file_datasets, 'r', encoding='utf8') as f:
-        datasets = [{k: v for k, v in row.items()}
-            for row in csv.DictReader(f, skipinitialspace=True)]
+        for index, row in enumerate(csv.DictReader(f, skipinitialspace=True)):
+            if index < start_row:
+                continue
+            if index >= finish_row:
+                break
+            datasets.append({k: v for k, v in row.items()})
+    print('Loaded {} datasets'.format(len(datasets)))
 
     # penanda untuk simpan setiap x waktu
     last_save = datetime.now()
@@ -188,11 +210,11 @@ class SingleSpider(CrawlSpider):
                     dataset['source_url'] = url
 
         # cek apakah sudah waktunya dump
-        now = datetime.now()
-        diff = now - self.last_save
-        if (diff.seconds > self.save_each):
-            self.last_save = now
-            self.dump()
+        # now = datetime.now()
+        # diff = now - self.last_save
+        # if (diff.seconds > self.save_each):
+        #     self.last_save = now
+        #     self.dump()
 
     def dump(self):
         results = {}
@@ -218,5 +240,18 @@ class SingleSpider(CrawlSpider):
                 for row in result:
                     output.writerow(row.values())
 
+    def dump_jl(self):
+        with jsonlines.open(self.file_result, mode='a') as writer:
+            for dataset in self.datasets:
+                writer.write({
+                    'status_id': dataset['status_id'],
+                    'status_id': dataset['status_data'],
+                    'status_timestamp': dataset['status_timestamp'],
+                    'similarity': dataset['similarity'],
+                    'source_url': dataset['source_url'],
+                })
+
+
     def closed(self, reason):
-        self.dump()
+        # self.dump()
+        self.dump_jl()
