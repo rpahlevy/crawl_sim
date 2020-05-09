@@ -28,6 +28,16 @@ def process_text(text):
     result = nlp(" ".join(result))
     return result
 
+def append_processed(processed, with_header):
+    mode = 'w' if with_header else 'a'
+    with open('source/preprocessed.csv', mode, encoding='utf8', newline='') as f:
+        output = csv.writer(f)
+        if with_header:
+            output.writerow(processed[0].keys())
+        for row in processed:
+            output.writerow(row.values())
+        print('-- added {} data'.format(len(processed)))
+
 # file_datasets = 'source/datasets'
 file_datasets = 'HTA_noduplicates.json'
 total = 100
@@ -41,6 +51,11 @@ with jsonlines.open(file_datasets) as f:
         if index >= total:
             break
 
+        if index % 1000 == 999:
+            print('processed {} data'.format(index))
+            append_processed(processed, index == 999)
+            processed = []
+
         processed.append({
             'status_id': data['id'],
             'status_data': process_text(data['text']),
@@ -49,11 +64,8 @@ with jsonlines.open(file_datasets) as f:
 
 
 if len(processed) > 1:
-    with open('source/preprocessed.csv', 'w', encoding='utf8', newline='') as f:
-        output = csv.writer(f)
-        output.writerow(processed[0].keys())
-        for row in processed:
-            output.writerow(row.values())
+    print('processed {} data'.format(index))
+    append_processed(processed, False)
 
 
 sys.exit('Preprocessed : %d data' % len(processed))
