@@ -51,16 +51,16 @@ with jsonlines.open(file_datasets) as f:
         if index >= total:
             break
 
-        if index % 1000 == 999:
-            print('processed {} data'.format(index))
-            append_processed(processed, index == 999)
-            processed = []
-
         processed.append({
             'status_id': data['id'],
             'status_data': process_text(data['text']),
             'status_timestamp': data['topsy']['timestamp'],
         })
+
+        if index % 1000 == 999:
+            print('processed {} data'.format(index + 1))
+            append_processed(processed, index == 999)
+            processed = []
 
 
 if len(processed) > 1:
@@ -68,4 +68,4 @@ if len(processed) > 1:
     append_processed(processed, False)
 
 
-sys.exit('Preprocessed : %d data' % len(processed))
+sys.exit('Preprocessed : %d data' % index)
