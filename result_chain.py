@@ -17,6 +17,8 @@ with jsonlines.open(file_datasets) as f:
         print('Chaining {} : {}'.format(index, row['status_id']))
         for idx, data in enumerate(f):
             print('-- Found {} : {}'.format(idx, data['id']))
+            if (idx >= 1000):
+                break
             if int(row['status_id']) == int(data['id']):
                 row['status_data'] = data['text']
                 break
