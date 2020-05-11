@@ -13,7 +13,8 @@ with open(output_name, 'r', encoding='utf8') as f:
 
 print('Loading datasets...')
 with jsonlines.open(file_datasets, skip_empty=True, skip_invalid=True) as f:
-    for row in results_arr:
+    for index, row in enumerate(results_arr):
+        print('Chaining {}'.format(index))
         for data in f:
             if row['status_id'] == data['id']:
                 row['status_data'] = data['text']
