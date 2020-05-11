@@ -15,11 +15,10 @@ print('Loading datasets...')
 with jsonlines.open(file_datasets) as f:
     for index, row in enumerate(results_arr):
         print('Chaining {}'.format(index))
-        for data in f:
-            if (data):
-                if row['status_id'] == data['id']:
-                    row['status_data'] = data['text']
-                    break
+        for idx, data in enumerate(f):
+            if row['status_id'] == data['id']:
+                row['status_data'] = data['text']
+                break
 
 print('Saving chained result...')
 with open(chained_name, 'w', encoding='utf8', newline='') as f:
