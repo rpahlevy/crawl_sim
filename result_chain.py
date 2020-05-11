@@ -12,7 +12,7 @@ with open(output_name, 'r', encoding='utf8') as f:
         for row in csv.DictReader(f, skipinitialspace=True)]
 
 print('Loading datasets...')
-with jsonlines.open(file_datasets) as f:
+with jsonlines.open(file_datasets, skip_empty=True, skip_invalid=True) as f:
     for row in results_arr:
         for data in f:
             if row['status_id'] == data['id']:
