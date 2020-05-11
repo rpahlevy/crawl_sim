@@ -12,13 +12,14 @@ with open(output_name, 'r', encoding='utf8') as f:
         for row in csv.DictReader(f, skipinitialspace=True)]
 
 print('Loading datasets...')
-with jsonlines.open(file_datasets, mode='r', skip_invalid=True) as f:
+with jsonlines.open(file_datasets) as f:
     for index, row in enumerate(results_arr):
         print('Chaining {}'.format(index))
         for data in f:
-            if row['status_id'] == data['id']:
-                row['status_data'] = data['text']
-                break
+            if (data):
+                if row['status_id'] == data['id']:
+                    row['status_data'] = data['text']
+                    break
 
 print('Saving chained result...')
 with open(chained_name, 'w', encoding='utf8', newline='') as f:
