@@ -36,7 +36,7 @@ def append_processed(processed, with_header):
             output.writerow(processed[0].keys())
         for row in processed:
             output.writerow(row.values())
-        print('-- added {} data'.format(len(processed)))
+        # print('-- added {} data'.format(len(processed)))
 
 # file_datasets = 'source/datasets'
 file_datasets = 'HTA_noduplicates.json'
@@ -44,10 +44,16 @@ total = 100
 if len(sys.argv) >= 2:
     total = int(sys.argv[1])
 
+print('Get last row')
+start_row = sum(1 for line in open('source/preprocessed.csv')) - 1
+
 print('Load datasets')
 processed = []
 with jsonlines.open(file_datasets) as f:
     for index, data in enumerate(f):
+        if index < start_row:
+            continue
+
         if index >= total:
             break
 
