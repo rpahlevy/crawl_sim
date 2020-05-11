@@ -13,15 +13,26 @@ with open(output_name, 'r', encoding='utf8') as f:
 
 print('Loading datasets...')
 with jsonlines.open(file_datasets) as f:
+    datasets = []
+    for index, data in enumerate(f):
+        if (index >= 3000):
+            break
+        datasets.append({
+            'status_id': data['id'],
+            'status_data': data['text'],
+        })
+
     for index, row in enumerate(results_arr):
         print('Chaining {} : {}'.format(index, row['status_id']))
-        for idx, data in enumerate(f):
-            print('-- Found {} : {}'.format(idx, data['id']))
-            if (idx >= 1000):
+        for idx, data in enumerate(datasets):
+            # print('-- Found {} : {}'.format(idx, data['status_id']))
+            if (idx >= 3000):
                 break
-            if int(row['status_id']) == int(data['id']):
-                row['status_data'] = data['text']
+            if int(row['status_id']) == int(data['status_id']):
+                row['status_data'] = data['status_data']
                 break
+        if (idx >= 3000):
+            break
 
 print('Saving chained result...')
 with open(chained_name, 'w', encoding='utf8', newline='') as f:
