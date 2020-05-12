@@ -6,25 +6,30 @@ import spacy
 print('Load en_core_web_lg')
 nlp = spacy.load("en_core_web_lg")
 
-def process_text(text):                                                 
-    doc = nlp(text.lower())
+import re
+
+def process_text(text):
+    for i in range(0, 100):
+        review = re.sub('[^a-zA-Z?:@[w_]+http[s]?://(?:[a-z]|[0-9]|[$-_@.&amp;+]|[!*\(\),]|(?:%[0-9a-f][0-9a-f]))+(?:(?:\d+,?)+(?:\.?\d+)?)]', 
+                    ' ', text[i])
+    doc = nlp(review.lower())
     result = []
     for token in doc:
         if token.text in nlp.Defaults.stop_words:
             continue
-        if token.is_punct:
-            continue
-        if token.lemma == '-PRON-':
-            continue
-        if 'rt' == token.lemma_:
-            continue
-        if '@' in token.lemma_:
-            continue
-        # if 'http' in token.lemma_:
-        #     continue
-        result.append(token.lemma_
+    #     if token.is_punct:
+    #         continue
+    #     if token.lemma == '-PRON-':
+    #         continue
+    #     if 'rt' == token.lemma_:
+    #         continue
+    #     if '@' in token.lemma_:
+    #         continue
+    #     # if 'http' in token.lemma_:
+    #     #     continue
+        result.append(token.lemma_)
             # .replace('#', '')
-            .replace('w/', 'with'))
+            # .replace('w/', 'with'))
     result = nlp(" ".join(result))
     return result
 
