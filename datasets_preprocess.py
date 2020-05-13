@@ -29,7 +29,7 @@ def process_text(text):
         result.append(token.lemma_)
             # .replace('#', '')
             # .replace('w/', 'with'))
-    result = nlp(" ".join(result))
+    result = nlp(" ".join(result).replace('# ', '#'))
     return result
 
 def append_processed(processed, with_header):
