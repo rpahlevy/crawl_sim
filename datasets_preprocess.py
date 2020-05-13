@@ -9,9 +9,8 @@ nlp = spacy.load("en_core_web_lg")
 import re
 
 def process_text(text):
-    for i in range(0, 100):
-        review = re.sub('[^a-zA-Z?:@[w_]+http[s]?://(?:[a-z]|[0-9]|[$-_@.&amp;+]|[!*\(\),]|(?:%[0-9a-f][0-9a-f]))+(?:(?:\d+,?)+(?:\.?\d+)?)]', 
-                    ' ', text[i])
+    review = re.sub('[^a-zA-Z?:@[w_]+http[s]?://(?:[a-z]|[0-9]|[$-_@.&amp;+]|[!*\(\),]|(?:%[0-9a-f][0-9a-f]))+(?:(?:\d+,?)+(?:\.?\d+)?)]', 
+                ' ', text)
     doc = nlp(review.lower())
     result = []
     for token in doc:
