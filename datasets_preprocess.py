@@ -43,7 +43,7 @@ def append_processed(processed, with_header):
         # print('-- added {} data'.format(len(processed)))
 
 # file_datasets = 'source/datasets'
-file_datasets = 'HTA_noduplicates.json'
+file_datasets = '/content/HTA_noduplicates.json'
 total = 100
 if len(sys.argv) >= 2:
     total = int(sys.argv[1])
