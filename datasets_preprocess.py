@@ -78,7 +78,7 @@ with jsonlines.open(file_datasets) as f:
 
 if len(processed) > 1:
     print('processed {} data'.format(index))
-    append_processed(processed, False)
+    append_processed(processed, index <= 999)
 
 
 sys.exit('Preprocessed : %d data' % index)
