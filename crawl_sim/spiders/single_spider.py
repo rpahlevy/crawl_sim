@@ -30,7 +30,7 @@ class SingleSpider(CrawlSpider):
 
     try:
         start_row = sum(1 for line in open(file_result))
-    except expression as identifier:
+    except:
         start_row = 0
 
     # parse start_urls untuk mendapatkan domain -> masukkan ke allowed_domains
