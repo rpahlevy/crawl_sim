@@ -50,7 +50,10 @@ if len(sys.argv) >= 2:
     total = int(sys.argv[1])
 
 print('Get last row')
-start_row = sum(1 for line in open('source/preprocessed.csv')) - 1
+try:
+    start_row = sum(1 for line in open('source/preprocessed.csv')) - 1
+except:
+    start_row = 0
 
 print('Load datasets')
 processed = []
