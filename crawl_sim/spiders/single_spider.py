@@ -171,7 +171,7 @@ class SingleSpider(CrawlSpider):
                         continue
                     hashtag = nlp(t.lower())
                     if hashtag.vector_norm:
-                        similarity = word.similarity(body)
+                        similarity = hashtag.similarity(body)
                         if similarity > max_similarity:
                             max_similarity = similarity
                 if max_similarity < 0.35:
