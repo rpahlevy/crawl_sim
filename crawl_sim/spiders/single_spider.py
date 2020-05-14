@@ -165,6 +165,18 @@ class SingleSpider(CrawlSpider):
 
                 word = dataset['status_data']
 
+                max_similarity = 0
+                for t in word.split(' '):
+                    if '#' not in t:
+                        continue
+                    hashtag = nlp(t.lower())
+                    if hashtag.vector_norm:
+                        similarity = word.similarity(body)
+                        if similarity > max_similarity:
+                            max_similarity = similarity
+                if max_similarity < 0.35:
+                    continue
+
                 # if word in self.cache_sim and url in self.cache_sim[word]:
                 #     similarity = float(self.cache_sim[word][url])
                 # else:
