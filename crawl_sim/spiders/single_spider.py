@@ -258,10 +258,10 @@ class SingleSpider(CrawlSpider):
             for dataset in self.datasets:
                 writer.write({
                     'status_id': dataset['status_id'],
-                    'status_id': dataset['status_data'],
+                    'status_data': dataset['status_data'],
                     'status_timestamp': dataset['status_timestamp'],
-                    'similarity': dataset['similarity'],
-                    'source_url': dataset['source_url'],
+                    'similarity': 0 if 'similarity' not in dataset else dataset['similarity'],
+                    'source_url': '' if 'source_url' not in dataset else dataset['source_url'],
                 })
 
 
