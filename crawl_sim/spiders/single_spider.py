@@ -222,11 +222,12 @@ class SingleSpider(CrawlSpider):
                     dataset['source_url'] = url
 
         # cek apakah sudah waktunya dump
-        # now = datetime.now()
-        # diff = now - self.last_save
-        # if (diff.seconds > self.save_each):
-        #     self.last_save = now
-        #     self.dump()
+        now = datetime.now()
+        diff = now - self.last_save
+        if (diff.seconds > self.save_each):
+            self.last_save = now
+            # self.dump()
+            self.dump_jl()
 
     def dump(self):
         results = {}
@@ -253,7 +254,7 @@ class SingleSpider(CrawlSpider):
                     output.writerow(row.values())
 
     def dump_jl(self):
-        with jsonlines.open(self.file_result, mode='a') as writer:
+        with jsonlines.open(self.file_result, mode='w') as writer:
             for dataset in self.datasets:
                 writer.write({
                     'status_id': dataset['status_id'],
