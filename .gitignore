@@ -2,6 +2,8 @@
 /result/*.json
 /result/*.csv
 /cache/*.csv
+/*.csv
+/*.jl
 
 __pycache__
 .vscode/settings.json

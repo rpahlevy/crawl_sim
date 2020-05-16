@@ -2,14 +2,20 @@ import glob
 import csv
 import jsonlines
 
-output_name = 'results.csv'
+# output_name = 'results.csv'
+output_name = 'result/results.jl'
 file_datasets = 'HTA_noduplicates.json'
 chained_name = 'chained_results.csv'
 
-print('Loading results csv...')
-with open(output_name, 'r', encoding='utf8') as f:
+# print('Loading results csv...')
+# with open(output_name, 'r', encoding='utf8') as f:
+#     results_arr = [{k: v for k, v in row.items()}
+#         for row in csv.DictReader(f, skipinitialspace=True)]
+print('Loading results jsonlist...')
+with jsonlines.open(output_name) as f:
     results_arr = [{k: v for k, v in row.items()}
-        for row in csv.DictReader(f, skipinitialspace=True)]
+        for row in f]
+print(len(results_arr))
 
 print('Loading datasets...')
 with jsonlines.open(file_datasets) as f:
