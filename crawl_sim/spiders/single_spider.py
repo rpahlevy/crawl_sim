@@ -187,7 +187,7 @@ class SingleSpider(CrawlSpider):
                 #     similarity = float(self.cache_sim[word][url])
                 # else:
                     # karena sudah di preprocess lsg panggil nlp
-                word = self.process_text(word)
+                word = self.process_text(word, True)
                 if (word.vector_norm):
                     similarity = word.similarity(body)
                 else:
