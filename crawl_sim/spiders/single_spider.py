@@ -130,6 +130,12 @@ class SingleSpider(CrawlSpider):
                 continue
             if token.lemma_ == '-PRON-':
                 continue
+            if 'rt' == token.lemma_:
+                continue
+            if '@' in token.lemma_:
+                continue
+            if 'http' in token.lemma_:
+                continue
             result.append(token.lemma_)
 
         result = nlp(" ".join(result))
@@ -181,7 +187,7 @@ class SingleSpider(CrawlSpider):
                 #     similarity = float(self.cache_sim[word][url])
                 # else:
                     # karena sudah di preprocess lsg panggil nlp
-                word = nlp(word)
+                word = self.process_text(word)
                 if (word.vector_norm):
                     similarity = word.similarity(body)
                 else:
