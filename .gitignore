@@ -4,6 +4,7 @@
 /cache/*.csv
 /*.csv
 /*.jl
+/*.xlsx
 
 __pycache__
 .vscode/settings.json

@@ -1,5 +1,6 @@
 import csv
 import sys
+import html
 import jsonlines
 
 import spacy
@@ -9,9 +10,10 @@ nlp = spacy.load("en_core_web_lg")
 import re
 
 def process_text(text):
-    review = re.sub('[^a-zA-Z?:@[w_]+http[s]?://(?:[a-z]|[0-9]|[$-_@.&amp;+]|[!*\(\),]|(?:%[0-9a-f][0-9a-f]))+(?:(?:\d+,?)+(?:\.?\d+)?)]', 
+    text = html.unescape(text)
+    text = re.sub('[^a-zA-Z?:@[w_]+http[s]?://(?:[a-z]|[0-9]|[$-_@.&amp;+]|[!*\(\),]|(?:%[0-9a-f][0-9a-f]))+(?:(?:\d+,?)+(?:\.?\d+)?)]', 
                 ' ', text)
-    doc = nlp(review.lower())
+    doc = nlp(text)
     result = []
     for token in doc:
         if token.text in nlp.Defaults.stop_words:
@@ -24,12 +26,12 @@ def process_text(text):
     #         continue
     #     if '@' in token.lemma_:
     #         continue
-    #     # if 'http' in token.lemma_:
-    #     #     continue
-        result.append(token.lemma_)
+        if 'http' not in token.text:
+            token.text = token.text.lower()
+        result.append(token.text)
             # .replace('#', '')
             # .replace('w/', 'with'))
-    result = nlp(" ".join(result).replace('# ', '#'))
+    result = nlp(" ".join(result).replace('# ', '#').replace('& amp;', '&'))
     return result
 
 def append_processed(processed, with_header):
