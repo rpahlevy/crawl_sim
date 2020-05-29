@@ -27,8 +27,9 @@ def process_text(text):
     #     if '@' in token.lemma_:
     #         continue
         if 'http' not in token.text:
-            token.text = token.text.lower()
-        result.append(token.text)
+            result.append(token.text.lower())
+        else:
+            result.append(token.text)
             # .replace('#', '')
             # .replace('w/', 'with'))
     result = nlp(" ".join(result).replace('# ', '#').replace('& amp;', '&'))
