@@ -26,8 +26,8 @@ def process_text(text):
     #         continue
     #     if '@' in token.lemma_:
     #         continue
-        # if 'http' not in token.text:
-        #     token.text = token.text.lower()
+        if 'http' not in token.text:
+            token.text = token.text.lower()
         result.append(token.text)
             # .replace('#', '')
             # .replace('w/', 'with'))
