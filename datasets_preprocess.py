@@ -64,6 +64,8 @@ datasets = []
 processed = []
 with jsonlines.open(file_datasets) as f:
     for index, data in enumerate(f):
+        if data['retweet_count'] <= 5:
+            continue
         datasets.append(data)
         if index % 1000 == 999:
             print('read {} data'.format(index + 1))
