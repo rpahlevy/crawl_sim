@@ -4,8 +4,8 @@ import html
 import jsonlines
 
 import spacy
-print('Load en_core_web_md')
-nlp = spacy.load("en_core_web_md")
+print('Load en_core_web_lg')
+nlp = spacy.load("en_core_web_lg")
 
 import re
 
