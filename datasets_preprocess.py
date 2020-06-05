@@ -67,10 +67,12 @@ with jsonlines.open(file_datasets) as f:
         if data['retweet_count'] <= 5:
             continue
         datasets.append(data)
+        datasets = sorted(datasets, key=itemgetter('retweet_count'), reverse=True)
+        if len(datasets) > total:
+            datasets.pop()
         if index % 1000 == 999:
             print('read {} data'.format(index + 1))
 
-    datasets = sorted(datasets, key=itemgetter('retweet_count'), reverse=True)
     for index, data in enumerate(datasets):
         if index < start_row:
             continue
