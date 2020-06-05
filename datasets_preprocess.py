@@ -4,10 +4,12 @@ import html
 import jsonlines
 
 import spacy
-print('Load en_core_web_lg')
-nlp = spacy.load("en_core_web_lg")
+print('Load en_core_web_md')
+nlp = spacy.load("en_core_web_md")
 
 import re
+
+from operator import itemgetter
 
 def process_text(text):
     text = html.unescape(text)
@@ -58,9 +60,16 @@ except:
     start_row = 0
 
 print('Load datasets')
+datasets = []
 processed = []
 with jsonlines.open(file_datasets) as f:
     for index, data in enumerate(f):
+        datasets.append(data)
+        if index % 1000 == 999:
+            print('read {} data'.format(index + 1))
+
+    datasets = sorted(datasets, key=itemgetter('retweet_count'), reverse=True)
+    for index, data in enumerate(datasets):
         if index < start_row:
             continue
 
@@ -74,7 +83,7 @@ with jsonlines.open(file_datasets) as f:
         })
 
         if index % 1000 == 999:
-            print('processed {} data'.format(index + 1))
+            print('read {} data'.format(index + 1))
             append_processed(processed, index == 999)
             processed = []
 
