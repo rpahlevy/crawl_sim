@@ -63,14 +63,14 @@ print('Load datasets')
 datasets = []
 processed = []
 with jsonlines.open(file_datasets) as f:
-    for index, data in enumerate(f):
-        datasets.append(data)
-        datasets = sorted(datasets, key=itemgetter('retweet_count'), reverse=True)
-        if len(datasets) > total:
-            datasets.pop()
-        print('read {} data => {}'.format(index + 1, len(datasets)))
+    # for index, data in enumerate(f):
+    #     datasets.append(data)
+    #     datasets = sorted(datasets, key=itemgetter('retweet_count'), reverse=True)
+    #     if len(datasets) > total:
+    #         datasets.pop()
+    #     print('read {} data => {}'.format(index + 1, len(datasets)))
 
-    for index, data in enumerate(datasets):
+    for index, data in enumerate(f):
         if index < start_row:
             continue
 
